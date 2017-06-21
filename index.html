@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pjbl">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=.5, maximum-scale=10.0, minimum-scale=.25, user-scalable=yes"/>
+<!--  <link rel="shortcut icon" href="boitata.ico">-->
+
+  <title>CC-CCjs</title>
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <style>
+    #capa {
+      background: url("ajax-loader.gif") no-repeat scroll center center #FFF;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+  }
+</style>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<script src="libs/jquery.flot.min.js"></script>
+<script src="calc/buck.js"></script>
+<script src="calc/boost.js"></script>
+<script src="calc/buck_boost.js"></script>
+<script src="calc/flyback.js"></script>
+<script src="calc/half.js"></script>
+<script src="calc/full.js"></script>
+<script src="calc/pushpull.js"></script>
+<script src="calc/forward.js"></script>
+<script src="calc/geral.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+</head>
+<script>
+  $(function() {
+    $('.tabs-buck').bind('click', function (e) {
+      setTimeout(function () {
+         play_buck();
+     }, 1);
+  });
+    $('.tabs-boost').bind('click', function (e) {
+      setTimeout(function () {
+         play_boost();
+     }, 1);
+  });
+    $('.tabs-buck_boost').bind('click', function (e) {
+      setTimeout(function () {
+         play_buck_boost();
+     }, 1);
+  });
+    $('.tabs-flyback').bind('click', function (e) {
+      setTimeout(function () {
+         play_flyback();
+     }, 1);
+  });
+    $('.tabs-forward').bind('click', function (e) {
+      setTimeout(function () {
+         play_forward();
+     }, 1);
+  });
+    $('.tabs-pushpull').bind('click', function (e) {
+      setTimeout(function () {
+         play_pushpull();
+     }, 1);
+  });
+    $('.tabs-half').bind('click', function (e) {
+      setTimeout(function () {
+         play_half();
+     }, 1);
+  });
+    $('.tabs-full').bind('click', function (e) {
+      setTimeout(function () {
+         play_full();
+     }, 1);
+  });
+});
+</script>
+<link rel="stylesheet" href="css/style.css">
+<body onload="play_buck();">
+<div id="wrap">
+<div class="container">
+
+  <h1 align="center">
+    CC-CCjs<small><small>v2</small></small>
+    <small>eletrônica de potência na web</small>
+</h1>
+      <div class="tabbable">
+<!--        <div id="teste1" class="progress progress-striped">
+          <div id="teste" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+          </div>
+      </div>!-->
+      <ul class="nav nav-tabs centered">
+          <li class="active"><a href="#tab1" onclick="setTimeout(function () { play_buck(); },1);" data-toggle="tab">Buck</a></li>
+          <li><a href="#tab2" onclick="setTimeout(function () { play_boost(); },1);" data-toggle="tab">Boost</a></li>
+          <li><a href="#tab3" onclick="setTimeout(function () { play_buck_boost(); },1);" data-toggle="tab">Buck-Boost</a></li>
+          <li><a href="#tab_flyback" onclick="setTimeout(function () { play_flyback(); },1);" data-toggle="tab">Flyback</a></li>
+          <li><a href="#tab_forward" onclick="setTimeout(function () { play_forward(); },1);" data-toggle="tab">Forward</a></li>
+          <li><a href="#tab_pushpull" onclick="setTimeout(function () { play_pushpull(); },1);" data-toggle="tab">Push-Pull</a></li>
+          <li><a href="#tab_half" onclick="setTimeout(function () { play_half(); },1);" data-toggle="tab">Half-Bridge</a></li>
+          <li><a href="#tab_full" onclick="setTimeout(function () { play_full(); },1);" data-toggle="tab">Full-Bridge</a></li>
+
+      </ul>
+      <div class="tab-content">
+          <div id="tab1" class="tab-pane active">
+            <div class="container">
+              <div class="row"><br>
+                <div class="col-mine-2">
+                  <div id="separa">
+                    <div id="separa">Vin (V): 
+                      <input class="pequeno" id="entrada_buck" type="text" value="160" onkeydown="if (event.keyCode == 13) play_buck()"><br>
+                  </div>
+                  <div id="separa">Vo (V): 
+                      <input class="pequeno" id="saida_buck" type="text" value="19.5" onkeydown="if (event.keyCode == 13) play_buck()"><br>
+                  </div>
+                  <div id="tensao_atual_buck"></div>
+              </div><br>
+              <button id="calc_buck" onclick="play_buck()" class="btn btn-primary">Calcular</button><br><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">Fs (kHz): 
+                  <input class="pequeno" id="frequencia_buck" type="text" value="100" onkeydown="if (event.keyCode == 13) play_buck()"><br>
+              </div>
+              <div id="separa">Po (W): 
+                  <input class="pequeno" id="potencia_buck" type="text" value="250" onkeydown="if (event.keyCode == 13) play_buck()">
+              </div>
+              <div id="potencia_atual_buck"></div>
+          </div>
+          <div id="separa"></div><br><br>
+      </div>
+      <div class="col-mine-2">
+          <div id="separa">
+            <div id="separa">&Delta;V (%): 
+              <input class="pequeno" id="delta_v_buck" type="text" value="3" onkeydown="if (event.keyCode == 13) play_buck()"><br>
+          </div>
+          <div id="separa">&Delta;I (%): 
+              <input class="pequeno" id="delta_i_buck" type="text" value="10" onkeydown="if (event.keyCode == 13) play_buck()">
+          </div>
+      </div>
+      <div id="separa"><br><br></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="separa">
+        <div id="carga_tag_buck">Carga (&Omega;): </div>
+        <div id="capacitancia_tag_buck">Capacitância (uF)</div>
+        <div id="indutancia_tag_buck">Indutância (uH): </div><br>
+        <div id="ganho_tag_buck">Ganho Estático: </div>
+        <div id="duty_tag_buck">Razão Cíclica: </div>
+    </div>
+    <div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="io_buck">I<sub>o </sub>(A):</div>
+    <div id="io_critica_buck">I<sub>o </sub>crítica (A):</div>
+    <div id="io_param_buck">K: </div>
+    <div id="indutancia_critica_buck">Indut. Crítica (uH):</div>
+</div><br>
+<div id="modo_conducao_buck"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-buck">
+    <li class="active"><a href="#tab_left_buck_topologia" data-toggle="tab">Topologia</a></li>
+    <li><a href="#tab_left_buck3" data-toggle="tab">Curva de Ganho</a></li>
+    <li><br></li>
+    <li><a href="#tab_left_buck1" data-toggle="tab">Carga</a></li>
+    <li><a href="#tab_left_buck2" data-toggle="tab">Indutor</a></li>
+    <li><a href="#tab_left_buck6" data-toggle="tab">Diodo</a></li>
+    <li><a href="#tab_left_buck7" data-toggle="tab">Transistor</a></li>
+    <li><br></li>
+    <li class="podenao_buck"><a href="#tab_left_buck4" data-toggle="tab">Diagrama de Bode</a></li>
+    <li class="podenao_buck"><a href="#tab_left_buck5" data-toggle="tab">Resposta ao Degrau</a></li>
+</ul>
+<div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_buck_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/buck.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_buck1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_buck" style="margin:auto; width: 575px; height: 300px;"></div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_buck3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_buck" onclick="play_buck()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_buck"></div>
+      <div id="valor_ganho_buck"></div><br>
+      <div id="continha_buck"></div>
+  </div>
+  <div class="col-mine-">
+      <div id="valor_vo_buck"></div>
+      <div id="valor_novo_carga_buck"></div>
+      <div id="valor_io_novo_buck"></div>
+  </div>
+</div>
+<div id="tab_left_buck2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_buck" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_buck" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_buck4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_buck" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_buck" style="margin:auto; width: 575px; height: 300px;"></div><br><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_buck5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_buck" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_buck"></div>
+      <div id="valor_tempo_step_buck"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_buck6" class="tab-pane">
+      <h4>
+        <p align="center">Corrente no Diodo</p>
+    </h4>
+    <div id="corrente_diodo_buck" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>
+    <h4>
+        <p align="center">Tensão no Diodo</p>
+    </h4>
+    <div id="tensao_diodo_buck" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_buck7" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Interruptor</p>
+</h4>
+<div id="corrente_chave_buck" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Interruptor</p>
+</h4>
+<div id="tensao_chave_buck" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tab2" class="tab-pane">
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="col-mine-2">
+        <div id="separa">
+          <div id="separa">Vin (V): 
+            <input id="entrada_boost" type="text" value="100" onkeydown="if (event.keyCode == 13) play_boost()"><br>
+        </div>
+        <div id="separa">Vo (V): 
+            <input id="saida_boost" type="text" value="150" onkeydown="if (event.keyCode == 13) play_boost()"><br>
+        </div>
+        <div id="tensao_atual_boost"></div>
+    </div><br>
+    <button id="calc_buck" onclick="play_boost()" class="btn btn-primary">Calcular</button><br><br><br>
+</div>
+<div class="col-mine-2">
+    <div id="separa">
+      <div id="separa">Fs (kHz): 
+        <input id="frequencia_boost" type="text" value="100" onkeydown="if (event.keyCode == 13) play_boost()"><br>
+    </div>
+    <div id="separa">Po (W): 
+        <input id="potencia_boost" type="text" value="250" onkeydown="if (event.keyCode == 13) play_boost()">
+    </div>
+    <div id="potencia_atual_boost"></div>
+</div>
+<div id="separa"></div><br><br>
+</div>
+<div class="col-mine-2">
+    <div id="separa">
+      <div id="separa">&Delta;V (%): 
+        <input id="delta_v_boost" type="text" value="3" onkeydown="if (event.keyCode == 13) play_boost()"><br>
+    </div>
+    <div id="separa">&Delta;I (%): 
+        <input id="delta_i_boost" type="text" value="10" onkeydown="if (event.keyCode == 13) play_boost()">
+    </div>
+</div>
+<div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+    <div id="separa">
+      <div id="carga_tag_boost">Carga (&Omega;): </div>
+      <div id="capacitancia_tag_boost">Capacitância (uF)</div>
+      <div id="indutancia_tag_boost">Indutância (uH): </div><br>
+      <div id="ganho_tag_boost">Ganho Estático: </div>
+      <div id="duty_tag_boost">Razão Cíclica: </div>
+  </div>
+  <div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+    <div id="separa">
+      <div id="io_boost">I<sub>o </sub>(A):</div>
+      <div id="io_critica_boost">I<sub>o </sub>crítica (A):</div>
+      <div id="io_param_boost">K: </div>
+      <div id="indutancia_critica_boost">Indut. Crítica (uH):</div>
+  </div><br>
+  <div id="modo_conducao_boost"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs tabs-boost">
+        <li class="active"><a href="#tab_left_boost_topologia" data-toggle="tab">Topologia</a></li>
+        <li><a href="#tab_left_boost3" data-toggle="tab">Curva de Ganho</a></li>
+        <li><br></li>
+        <li><a href="#tab_left_boost1" data-toggle="tab">Carga</a></li>
+        <li><a href="#tab_left_boost2" data-toggle="tab">Indutor</a></li>
+        <li><a href="#tab_left_boost6" data-toggle="tab">Diodo</a></li>
+        <li><a href="#tab_left_boost7" data-toggle="tab">Transistor</a></li>
+        <li><br></li>
+        <li class="podenao_boost"><a href="#tab_left_boost4" data-toggle="tab">Diagrama de Bode</a></li>
+        <li class="podenao_boost"><a href="#tab_left_boost5" data-toggle="tab">Resposta ao Degrau</a></li>
+    </ul>
+    <div class="row">
+      <div class="tab-content col-mine-9">
+        <div id="tab_left_boost_topologia" class="tab-pane active">
+            <h4>
+              <p align="center">Topologia</p>
+          </h4>
+          <p align="center">
+            <img align="center" style="width: 100%; height: auto;" src="imgs/boost.svg"></p><br><br><br><br><br>
+        </div>
+        <div id="tab_left_boost1" class="tab-pane">
+          <h4>
+            <p align="center">Tensão na Carga</p>
+        </h4>
+        <div id="tensao_saida_boost" style="margin:auto; width: 575px; height: 300px;">    </div><br>
+    </div>
+    <div id="tab_left_boost3" class="tab-pane">
+      <h4>
+        <p align="center">Operação do Conversor</p>
+    </h4>
+    <div id="grafico_operacao_boost" onclick="play_boost()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+    <div class="col-mine-3">
+        <div id="valor_k_boost"></div>
+        <div id="valor_ganho_boost"></div><br>
+        <div id="continha_boost"></div>
+    </div>
+    <div class="col-mine-3">
+        <div id="valor_vo_boost"></div>
+        <div id="valor_novo_carga_boost"></div>
+        <div id="valor_io_novo_boost"></div>
+    </div><br>
+</div>
+<div id="tab_left_boost2" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Indutor</p>
+</h4>
+<div id="corrente_indutor_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Indutor</p>
+</h4>
+<div id="tensao_indutor_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+<div id="tab_left_boost4" class="tab-pane">
+  <h4>
+    <p align="center">Margem de Ganho *</p>
+</h4>
+<div id="diagrama_bode_boost" style="margin:auto; width: 575px; height: 300px;"></div><br>
+<h4>
+    <p align="center">Margem de Fase *</p>
+</h4>
+<div id="diagrama_fase_boost" style="margin:auto; width: 575px; height: 300px;"></div><br><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_boost5" class="tab-pane">
+  <h4>
+    <p align="center">Resposta ao Degrau *</p>
+</h4>
+<div id="resposta_degrau_boost" style="margin:auto; width: 575px; height: 300px;"></div><br>
+<div class="col-md-6 col-mine-6">
+    <div id="valor_tensao_step_boost"></div>
+    <div id="valor_tempo_step_boost"></div>
+    <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+</div>
+<div id="tab_left_boost6" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Diodo</p>
+  </h4>
+  <div id="corrente_diodo_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Diodo</p>
+  </h4>
+  <div id="tensao_diodo_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_boost7" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Interruptor</p>
+  </h4>
+  <div id="corrente_chave_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Interruptor</p>
+  </h4>
+  <div id="tensao_chave_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tab3" class="tab-pane">
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="col-mine-2">
+          <div id="separa">
+            <div id="separa">Vin (V): 
+              <input id="entrada_buck_boost" type="text" value="100" onkeydown="if (event.keyCode == 13) play_buck_boost()"><br>
+          </div>
+          <div id="separa">Vo (V): 
+              <input id="saida_buck_boost" type="text" value="180" onkeydown="if (event.keyCode == 13) play_buck_boost()"><br>
+          </div>
+          <div id="tensao_atual_buck_boost"></div>
+      </div><br>
+      <button id="calc_buck_boost" onclick="play_buck_boost()" class="btn btn-primary">Calcular</button><br><br><br>
+  </div>
+  <div class="col-mine-2">
+      <div id="separa">
+        <div id="separa">Fs (kHz): 
+          <input id="frequencia_buck_boost" type="text" value="100" onkeydown="if (event.keyCode == 13) play_buck_boost()"><br>
+      </div>
+      <div id="separa">Po (W): 
+          <input id="potencia_buck_boost" type="text" value="250" onkeydown="if (event.keyCode == 13) play_buck_boost()">
+      </div>
+      <div id="potencia_atual_buck_boost"></div>
+  </div>
+  <div id="separa"></div><br><br>
+</div>
+<div class="col-mine-2">
+  <div id="separa">
+    <div id="separa">&Delta;V (%): 
+      <input id="delta_v_buck_boost" type="text" value="3" onkeydown="if (event.keyCode == 13) play_buck_boost()"><br>
+  </div>
+  <div id="separa">&Delta;I (%): 
+      <input id="delta_i_buck_boost" type="text" value="10" onkeydown="if (event.keyCode == 13) play_buck_boost()">
+  </div>
+</div>
+<div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="carga_tag_buck_boost">Carga (&Omega;): </div>
+    <div id="capacitancia_tag_buck_boost">Capacitância (uF)</div>
+    <div id="indutancia_tag_buck_boost">Indutância (uH): </div><br>
+    <div id="ganho_tag_buck_boost">Ganho Estático: </div>
+    <div id="duty_tag_buck_boost">Razão Cíclica: </div>
+</div>
+<div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="io_buck_boost">I<sub>o </sub>(A):</div>
+    <div id="io_critica_buck_boost">I<sub>o </sub>crítica (A):</div>
+    <div id="io_param_buck_boost">K: </div>
+    <div id="indutancia_critica_buck_boost">Indut. Crítica (uH):</div>
+</div><br>
+<div id="modo_conducao_buck_boost"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-buck_boost">
+      <li class="active"><a href="#tab_left_buck_boost_topologia" data-toggle="tab">Topologia</a></li>
+      <li><a href="#tab_left_buck_boost3" data-toggle="tab">Curva de Ganho</a></li>
+      <li><br></li>
+      <li><a href="#tab_left_buck_boost1" data-toggle="tab">Carga</a></li>
+      <li><a href="#tab_left_buck_boost2" data-toggle="tab">Indutor</a></li>
+      <li><a href="#tab_left_buck_boost6" data-toggle="tab">Diodo</a></li>
+      <li><a href="#tab_left_buck_boost7" data-toggle="tab">Transistor</a></li>
+      <li><br></li>
+      <li class="podenao_buck_boost"><a href="#tab_left_buck_boost4" data-toggle="tab">Diagrama de Bode</a></li>
+      <li class="podenao_buck_boost"><a href="#tab_left_buck_boost5" data-toggle="tab">Resposta ao Degrau</a></li>
+  </ul>
+  <div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_buck_boost_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/buck_boost.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_buck_boost1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_buck_boost" style="margin:auto; width: 575px; height: 300px;">    </div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_buck_boost3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_buck_boost" onclick="play_buck_boost()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_buck_boost"></div>
+      <div id="valor_ganho_buck_boost"></div><br>
+      <div id="continha_buck_boost"></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="valor_vo_buck_boost"></div>
+      <div id="valor_novo_carga_buck_boost"></div>
+      <div id="valor_io_novo_buck_boost"></div>
+  </div><br>
+</div>
+<div id="tab_left_buck_boost2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_buck_boost4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_buck_boost5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_buck_boost"></div>
+      <div id="valor_tempo_step_buck_boost"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_buck_boost6" class="tab-pane">
+      <h4>
+        <p align="center">Corrente no Diodo</p>
+    </h4>
+    <div id="corrente_diodo_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>
+    <h4>
+        <p align="center">Tensão no Diodo</p>
+    </h4>
+    <div id="tensao_diodo_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_buck_boost7" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Interruptor</p>
+</h4>
+<div id="corrente_chave_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Interruptor</p>
+</h4>
+<div id="tensao_chave_buck_boost" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!---flyback-->
+
+<div id="tab_flyback" class="tab-pane">
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="col-mine-2">
+          <div id="separa">
+              <div id="separa">Vin (V): 
+                  <input id="entrada_flyback" type="text" value="100" onkeydown="if (event.keyCode == 13) play_flyback()"><br>
+              </div>
+              <div id="separa">Vo (V): 
+                  <input id="saida_flyback" type="text" value="180" onkeydown="if (event.keyCode == 13) play_flyback()"><br>
+                  <div id="separa">Ns/Np: 
+                      <input id="trafo_flyback" type="text" value="1.25" onkeydown="if (event.keyCode == 13) play_flyback()"><br></div>
+                  </div>
+                  <div id="tensao_atual_flyback"></div>
+              </div><br>
+              <button id="calc_flyback" onclick="play_flyback()" class="btn btn-primary">Calcular</button><br><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">Fs (kHz): 
+                  <input id="frequencia_flyback" type="text" value="100" onkeydown="if (event.keyCode == 13) play_flyback()"><br>
+              </div>
+              <div id="separa">Po (W): 
+                  <input id="potencia_flyback" type="text" value="250" onkeydown="if (event.keyCode == 13) play_flyback()">
+              </div>
+              <div id="potencia_atual_flyback"></div>
+          </div>
+          <div id="separa"></div><br><br>
+      </div>
+      <div class="col-mine-2">
+          <div id="separa">
+            <div id="separa">&Delta;V (%): 
+              <input id="delta_v_flyback" type="text" value="3" onkeydown="if (event.keyCode == 13) play_flyback()"><br>
+          </div>
+          <div id="separa">&Delta;I (%): 
+              <input id="delta_i_flyback" type="text" value="10" onkeydown="if (event.keyCode == 13) play_flyback()">
+          </div>
+      </div>
+      <div id="separa"><br><br></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="separa">
+        <div id="carga_tag_flyback">Carga (&Omega;): </div>
+        <div id="capacitancia_tag_flyback">Capacitância (uF)</div>
+        <div id="indutancia_tag_flyback">Indutância (uH): </div><br>
+        <div id="ganho_tag_flyback">Ganho Estático: </div>
+        <div id="duty_tag_flyback">Razão Cíclica: </div>
+    </div>
+    <div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="io_flyback">I<sub>o </sub>(A):</div>
+    <div id="io_critica_flyback">I<sub>o </sub>crítica (A):</div>
+    <div id="io_param_flyback">K: </div>
+    <div id="indutancia_critica_flyback">Indut. Crítica (uH):</div>
+</div><br>
+<div id="modo_conducao_flyback"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-flyback">
+      <li class="active"><a href="#tab_left_flyback_topologia" data-toggle="tab">Topologia</a></li>
+      <li><a href="#tab_left_flyback3" data-toggle="tab">Curva de Ganho</a></li>
+      <li><br></li>
+      <li><a href="#tab_left_flyback1" data-toggle="tab">Carga</a></li>
+      <li><a href="#tab_left_flyback2" data-toggle="tab">Indutor</a></li>
+      <li><a href="#tab_left_flyback6" data-toggle="tab">Diodo</a></li>
+      <li><a href="#tab_left_flyback7" data-toggle="tab">Transistor</a></li>
+      <li><br></li>
+      <li class="podenao_flyback"><a href="#tab_left_flyback4" data-toggle="tab">Diagrama de Bode</a></li>
+      <li class="podenao_flyback"><a href="#tab_left_flyback5" data-toggle="tab">Resposta ao Degrau</a></li>
+  </ul>
+  <div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_flyback_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/flyback.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_flyback1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_flyback" style="margin:auto; width: 575px; height: 300px;">    </div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_flyback3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_flyback" onclick="play_flyback()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_flyback"></div>
+      <div id="valor_ganho_flyback"></div><br>
+      <div id="continha_flyback"></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="valor_vo_flyback"></div>
+      <div id="valor_novo_carga_flyback"></div>
+      <div id="valor_io_novo_flyback"></div>
+  </div><br>
+</div>
+<div id="tab_left_flyback2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_flyback" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_flyback" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_flyback4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_flyback" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_flyback" style="margin:auto; width: 575px; height: 300px;"></div><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_flyback5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_flyback" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_flyback"></div>
+      <div id="valor_tempo_step_flyback"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_flyback6" class="tab-pane">
+      <h4>
+        <p align="center">Corrente no Diodo</p>
+    </h4>
+    <div id="corrente_diodo_flyback" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>
+    <h4>
+        <p align="center">Tensão no Diodo</p>
+    </h4>
+    <div id="tensao_diodo_flyback" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_flyback7" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Interruptor</p>
+</h4>
+<div id="corrente_chave_flyback" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Interruptor</p>
+</h4>
+<div id="tensao_chave_flyback" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!---half-->
+
+<div id="tab_half" class="tab-pane">
+    <div class="container">
+      <div class="row"><br>
+        <div class="col-mine-2">
+          <div id="separa">
+              <div id="separa">Vin (V): 
+                  <input class="pequeno" id="entrada_half" type="text" value="160" onkeydown="if (event.keyCode == 13) play_half()"><br>
+              </div>
+              <div id="separa">Vo (V): 
+                  <input class="pequeno" id="saida_half" type="text" value="19.5" onkeydown="if (event.keyCode == 13) play_half()"><br>
+                  <div id="separa">Ns/Np: 
+                      <input id="trafo_half" type="text" value="1.25" onkeydown="if (event.keyCode == 13) play_half()"><br></div>
+                  </div>
+                  <div id="tensao_atual_half"></div>
+              </div><br>
+              <button id="calc_half" onclick="play_half()" class="btn btn-primary">Calcular</button><br><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">Fs (kHz): 
+                  <input class="pequeno" id="frequencia_half" type="text" value="100" onkeydown="if (event.keyCode == 13) play_half()"><br>
+              </div>
+              <div id="separa">Po (W): 
+                  <input class="pequeno" id="potencia_half" type="text" value="250" onkeydown="if (event.keyCode == 13) play_half()">
+              </div>
+              <div id="potencia_atual_half"></div>
+          </div>
+          <div id="separa"></div><br><br>
+      </div>
+      <div class="col-mine-2">
+          <div id="separa">
+            <div id="separa">&Delta;V (%): 
+              <input class="pequeno" id="delta_v_half" type="text" value="3" onkeydown="if (event.keyCode == 13) play_half()"><br>
+          </div>
+          <div id="separa">&Delta;I (%): 
+              <input class="pequeno" id="delta_i_half" type="text" value="10" onkeydown="if (event.keyCode == 13) play_half()">
+          </div>
+      </div>
+      <div id="separa"><br><br></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="separa">
+        <div id="carga_tag_half">Carga (&Omega;): </div>
+        <div id="capacitancia_tag_half">Capacitância (uF)</div>
+        <div id="indutancia_tag_half">Indutância (uH): </div><br>
+        <div id="ganho_tag_half">Ganho Estático: </div>
+        <div id="duty_tag_half">Razão Cíclica: </div>
+    </div>
+    <div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="io_half">I<sub>o </sub>(A):</div>
+    <div id="io_critica_half">I<sub>o </sub>crítica (A):</div>
+    <div id="io_param_half">K: </div>
+    <div id="indutancia_critica_half">Indut. Crítica (uH):</div>
+</div><br>
+<div id="modo_conducao_half"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-half">
+      <li class="active"><a href="#tab_left_half_topologia" data-toggle="tab">Topologia</a></li>
+      <li><a href="#tab_left_half3" data-toggle="tab">Curva de Ganho</a></li>
+      <li><br></li>
+      <li><a href="#tab_left_half1" data-toggle="tab">Carga</a></li>
+      <li><a href="#tab_left_half2" data-toggle="tab">Indutor</a></li>
+      <li><a href="#tab_left_half6" data-toggle="tab">Diodos</a></li>
+      <li><a href="#tab_left_half7" data-toggle="tab">Transistores</a></li>
+      <li><br></li>
+      <li class="podenao_half"><a href="#tab_left_half4" data-toggle="tab">Diagrama de Bode</a></li>
+      <li class="podenao_half"><a href="#tab_left_half5" data-toggle="tab">Resposta ao Degrau</a></li>
+  </ul>
+  <div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_half_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/half.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_half1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_half" style="margin:auto; width: 575px; height: 300px;"></div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_half3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_half" onclick="play_half()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_half"></div>
+      <div id="valor_ganho_half"></div><br>
+      <div id="continha_half"></div>
+  </div>
+  <div class="col-mine-">
+      <div id="valor_vo_half"></div>
+      <div id="valor_novo_carga_half"></div>
+      <div id="valor_io_novo_half"></div>
+  </div>
+</div>
+<div id="tab_left_half2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_half" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_half" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_half4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_half" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_half" style="margin:auto; width: 575px; height: 300px;"></div><br><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_half5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_half" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_half"></div>
+      <div id="valor_tempo_step_half"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_half6" class="tab-pane">
+      <h4>
+        <p align="center">Correntes nos Diodos</p>
+    </h4>
+    <div align="center" id="choicesDiodosA_half"></div>
+    <div id="corrente_diodo_half" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>                      
+    <h4>
+        <p align="center">Tensões nos Diodos</p>
+    </h4>
+    <div align="center" id="choicesDiodosV_half"></div>
+    <div id="tensao_diodo_half" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_half7" class="tab-pane">
+  <h4>
+    <p align="center">Correntes nos Interruptores</p>
+</h4>
+<div align="center" id="choicesChavesA_half"></div>
+<div id="corrente_chave_half" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensões no Interruptores</p>
+</h4>
+<div align="center" id="choicesChavesV_half"></div>
+<div id="tensao_chave_half" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!---full-->
+
+<div id="tab_full" class="tab-pane">
+    <div class="container">
+      <div class="row"><br>
+        <div class="col-mine-2">
+          <div id="separa">
+              <div id="separa">Vin (V): 
+                  <input class="pequeno" id="entrada_full" type="text" value="160" onkeydown="if (event.keyCode == 13) play_full()"><br>
+              </div>
+              <div id="separa">Vo (V): 
+                  <input class="pequeno" id="saida_full" type="text" value="19.5" onkeydown="if (event.keyCode == 13) play_full()"><br>
+                  <div id="separa">Ns/Np: 
+                      <input id="trafo_full" type="text" value="1.25" onkeydown="if (event.keyCode == 13) play_full()"><br></div>
+                  </div>
+                  <div id="tensao_atual_full"></div>
+              </div><br>
+              <button id="calc_full" onclick="play_full()" class="btn btn-primary">Calcular</button><br><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">Fs (kHz): 
+                  <input class="pequeno" id="frequencia_full" type="text" value="100" onkeydown="if (event.keyCode == 13) play_full()"><br>
+              </div>
+              <div id="separa">Po (W): 
+                  <input class="pequeno" id="potencia_full" type="text" value="250" onkeydown="if (event.keyCode == 13) play_full()">
+              </div>
+              <div id="potencia_atual_full"></div>
+          </div>
+          <div id="separa"></div><br><br>
+      </div>
+      <div class="col-mine-2">
+          <div id="separa">
+            <div id="separa">&Delta;V (%): 
+              <input class="pequeno" id="delta_v_full" type="text" value="3" onkeydown="if (event.keyCode == 13) play_full()"><br>
+          </div>
+          <div id="separa">&Delta;I (%): 
+              <input class="pequeno" id="delta_i_full" type="text" value="10" onkeydown="if (event.keyCode == 13) play_full()">
+          </div>
+      </div>
+      <div id="separa"><br><br></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="separa">
+        <div id="carga_tag_full">Carga (&Omega;): </div>
+        <div id="capacitancia_tag_full">Capacitância (uF)</div>
+        <div id="indutancia_tag_full">Indutância (uH): </div><br>
+        <div id="ganho_tag_full">Ganho Estático: </div>
+        <div id="duty_tag_full">Razão Cíclica: </div>
+    </div>
+    <div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="io_full">I<sub>o </sub>(A):</div>
+    <div id="io_critica_full">I<sub>o </sub>crítica (A):</div>
+    <div id="io_param_full">K: </div>
+    <div id="indutancia_critica_full">Indut. Crítica (uH):</div>
+</div><br>
+<div id="modo_conducao_full"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-full">
+      <li class="active"><a href="#tab_left_full_topologia" data-toggle="tab">Topologia</a></li>
+      <li><a href="#tab_left_full3" data-toggle="tab">Curva de Ganho</a></li>
+      <li><br></li>
+      <li><a href="#tab_left_full1" data-toggle="tab">Carga</a></li>
+      <li><a href="#tab_left_full2" data-toggle="tab">Indutor</a></li>
+      <li><a href="#tab_left_full6" data-toggle="tab">Diodos</a></li>
+      <li><a href="#tab_left_full7" data-toggle="tab">Transistores</a></li>
+      <li><br></li>
+      <li class="podenao_full"><a href="#tab_left_full4" data-toggle="tab">Diagrama de Bode</a></li>
+      <li class="podenao_full"><a href="#tab_left_full5" data-toggle="tab">Resposta ao Degrau</a></li>
+  </ul>
+  <div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_full_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/full.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_full1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_full" style="margin:auto; width: 575px; height: 300px;"></div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_full3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_full" onclick="play_full()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_full"></div>
+      <div id="valor_ganho_full"></div><br>
+      <div id="continha_full"></div>
+  </div>
+  <div class="col-mine-">
+      <div id="valor_vo_full"></div>
+      <div id="valor_novo_carga_full"></div>
+      <div id="valor_io_novo_full"></div>
+  </div>
+</div>
+<div id="tab_left_full2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_full" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_full" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_full4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_full" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_full" style="margin:auto; width: 575px; height: 300px;"></div><br><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_full5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_full" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_full"></div>
+      <div id="valor_tempo_step_full"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_full6" class="tab-pane">
+      <h4>
+        <p align="center">Corrente no Diodo</p>
+    </h4>
+    <div align="center" id="choicesDiodosA_full"></div>
+    <div id="corrente_diodo_full" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>
+    <h4>
+        <p align="center">Tensão no Diodo</p>
+    </h4>
+    <div align="center" id="choicesDiodosV_full"></div>
+    <div id="tensao_diodo_full" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_full7" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Interruptor</p>
+</h4>
+<div align="center" id="choicesChavesA_full"></div>
+<div id="corrente_chave_full" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Interruptor</p>
+</h4>
+<div align="center" id="choicesChavesV_full"></div>
+<div id="tensao_chave_full" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!---forward-->
+
+<div id="tab_forward" class="tab-pane">
+    <div class="container">
+      <div class="row"><br>
+        <div class="col-mine-2">
+          <div id="separa">
+              <div id="separa">Vin (V): 
+                  <input class="pequeno" id="entrada_forward" type="text" value="160" onkeydown="if (event.keyCode == 13) play_forward()"><br>
+              </div>
+              <div id="separa">Vo (V): 
+                  <input class="pequeno" id="saida_forward" type="text" value="19.5" onkeydown="if (event.keyCode == 13) play_forward()"><br>
+                  <div id="separa">Ns/Np: 
+                      <input id="trafo_forward" type="text" value="1.25" onkeydown="if (event.keyCode == 13) play_forward()"><br></div>
+                  </div>
+                  <div id="tensao_atual_forward"></div>
+              </div><br>
+              <button id="calc_forward" onclick="play_forward()" class="btn btn-primary">Calcular</button><br><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">Fs (kHz): 
+                  <input class="pequeno" id="frequencia_forward" type="text" value="100" onkeydown="if (event.keyCode == 13) play_forward()"><br>
+              </div>
+              <div id="separa">Po (W): 
+                  <input class="pequeno" id="potencia_forward" type="text" value="250" onkeydown="if (event.keyCode == 13) play_forward()">
+              </div>
+              <div id="separa">Nt/Np: 
+                  <input id="trafo_forward_desmag" type="text" value="3" onkeydown="if (event.keyCode == 13) play_forward()"><br></div>
+                  <div id="potencia_atual_forward"></div>
+              </div>
+              <div id="separa"></div><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">&Delta;V (%): 
+                  <input class="pequeno" id="delta_v_forward" type="text" value="3" onkeydown="if (event.keyCode == 13) play_forward()"><br>
+              </div>
+              <div id="separa">&Delta;I (%): 
+                  <input class="pequeno" id="delta_i_forward" type="text" value="10" onkeydown="if (event.keyCode == 13) play_forward()">
+              </div>
+              <div id="separa">
+                  Lm (mH)
+                  <input id="lm_forward" type="text" value="0.03" onkeydown="if (event.keyCode == 13) play_forward()"><br></div>
+              </div>
+              <div id="separa"><br><br></div>
+          </div>
+          <div class="col-mine-3">
+              <div id="separa">
+                <div id="carga_tag_forward">Carga (&Omega;): </div>
+                <div id="capacitancia_tag_forward">Capacitância (uF)</div>
+                <div id="indutancia_tag_forward">Indutância (uH): </div><br>
+                <div id="ganho_tag_forward">Ganho Estático: </div>
+                <div id="duty_tag_forward">Razão Cíclica: </div>
+            </div>
+            <div id="separa"><br><br></div>
+        </div>
+        <div class="col-mine-3">
+          <div id="separa">
+            <div id="io_forward">I<sub>o </sub>(A):</div>
+            <div id="io_critica_forward">I<sub>o </sub>crítica (A):</div>
+            <div id="io_param_forward">K: </div>
+            <div id="indutancia_critica_forward">Indut. Crítica (uH):</div>
+        </div><br>
+        <div id="modo_conducao_forward"></div>
+    </div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-forward">
+      <li class="active"><a href="#tab_left_forward_topologia" data-toggle="tab">Topologia</a></li>
+      <li><a href="#tab_left_forward3" data-toggle="tab">Curva de Ganho</a></li>
+      <li><br></li>
+      <li><a href="#tab_left_forward1" data-toggle="tab">Carga</a></li>
+      <li><a href="#tab_left_forward2" data-toggle="tab">Indutor</a></li>
+      <li><a href="#tab_left_forward6" data-toggle="tab">Diodos</a></li>
+      <li><a href="#tab_left_forward7" data-toggle="tab">Transistor</a></li>
+      <li><br></li>
+      <li class="podenao_forward"><a href="#tab_left_forward4" data-toggle="tab">Diagrama de Bode</a></li>
+      <li class="podenao_forward"><a href="#tab_left_forward5" data-toggle="tab">Resposta ao Degrau</a></li>
+  </ul>
+  <div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_forward_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/forward.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_forward1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_forward" style="margin:auto; width: 575px; height: 300px;"></div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_forward3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_forward" onclick="play_forward()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_forward"></div>
+      <div id="valor_ganho_forward"></div><br>
+      <div id="continha_forward"></div>
+  </div>
+  <div class="col-mine-">
+      <div id="valor_vo_forward"></div>
+      <div id="valor_novo_carga_forward"></div>
+      <div id="valor_io_novo_forward"></div>
+  </div>
+</div>
+<div id="tab_left_forward2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_forward" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_forward" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_forward4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_forward" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_forward" style="margin:auto; width: 575px; height: 300px;"></div><br><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_forward5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_forward" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_forward"></div>
+      <div id="valor_tempo_step_forward"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_forward6" class="tab-pane">
+      <h4>
+        <p align="center">Corrente no Diodo</p>
+    </h4>
+    <div align="center" id="choicesDiodosA_forward"></div>
+    <div id="corrente_diodo_forward" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>
+    <h4>
+        <p align="center">Tensão no Diodo</p>
+    </h4>
+    <div align="center" id="choicesDiodosV_forward"></div>
+    <div id="tensao_diodo_forward" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_forward7" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Interruptor</p>
+</h4>
+<div id="corrente_chave_forward" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Interruptor</p>
+</h4>
+<div id="tensao_chave_forward" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!---pushpull-->
+
+<div id="tab_pushpull" class="tab-pane">
+    <div class="container">
+      <div class="row"><br>
+        <div class="col-mine-2">
+          <div id="separa">
+              <div id="separa">Vin (V): 
+                  <input class="pequeno" id="entrada_pushpull" type="text" value="160" onkeydown="if (event.keyCode == 13) play_pushpull()"><br>
+              </div>
+              <div id="separa">Vo (V): 
+                  <input class="pequeno" id="saida_pushpull" type="text" value="19.5" onkeydown="if (event.keyCode == 13) play_pushpull()"><br>
+                  <div id="separa">Ns/Np: 
+                      <input id="trafo_pushpull" type="text" value="1.25" onkeydown="if (event.keyCode == 13) play_pushpull()"><br></div>
+                  </div>
+                  <div id="tensao_atual_pushpull"></div>
+              </div><br>
+              <button id="calc_pushpull" onclick="play_pushpull()" class="btn btn-primary">Calcular</button><br><br><br>
+          </div>
+          <div class="col-mine-2">
+              <div id="separa">
+                <div id="separa">Fs (kHz): 
+                  <input class="pequeno" id="frequencia_pushpull" type="text" value="100" onkeydown="if (event.keyCode == 13) play_pushpull()"><br>
+              </div>
+              <div id="separa">Po (W): 
+                  <input class="pequeno" id="potencia_pushpull" type="text" value="250" onkeydown="if (event.keyCode == 13) play_pushpull()">
+              </div>
+              <div id="potencia_atual_pushpull"></div>
+          </div>
+          <div id="separa"></div><br><br>
+      </div>
+      <div class="col-mine-2">
+          <div id="separa">
+            <div id="separa">&Delta;V (%): 
+              <input class="pequeno" id="delta_v_pushpull" type="text" value="3" onkeydown="if (event.keyCode == 13) play_pushpull()"><br>
+          </div>
+          <div id="separa">&Delta;I (%): 
+              <input class="pequeno" id="delta_i_pushpull" type="text" value="10" onkeydown="if (event.keyCode == 13) play_pushpull()">
+          </div>
+      </div>
+      <div id="separa"><br><br></div>
+  </div>
+  <div class="col-mine-3">
+      <div id="separa">
+        <div id="carga_tag_pushpull">Carga (&Omega;): </div>
+        <div id="capacitancia_tag_pushpull">Capacitância (uF)</div>
+        <div id="indutancia_tag_pushpull">Indutância (uH): </div><br>
+        <div id="ganho_tag_pushpull">Ganho Estático: </div>
+        <div id="duty_tag_pushpull">Razão Cíclica: </div>
+    </div>
+    <div id="separa"><br><br></div>
+</div>
+<div class="col-mine-3">
+  <div id="separa">
+    <div id="io_pushpull">I<sub>o </sub>(A):</div>
+    <div id="io_critica_pushpull">I<sub>o </sub>crítica (A):</div>
+    <div id="io_param_pushpull">K: </div>
+    <div id="indutancia_critica_pushpull">Indut. Crítica (uH):</div>
+</div><br>
+<div id="modo_conducao_pushpull"></div>
+</div>
+</div>
+</div>
+<div class="tabbable tabs-left">
+  <ul class="nav nav-tabs tabs-pushpull">
+      <li class="active"><a href="#tab_left_pushpull_topologia" data-toggle="tab">Topologia</a></li>
+      <li><a href="#tab_left_pushpull3" data-toggle="tab">Curva de Ganho</a></li>
+      <li><br></li>
+      <li><a href="#tab_left_pushpull1" data-toggle="tab">Carga</a></li>
+      <li><a href="#tab_left_pushpull2" data-toggle="tab">Indutor</a></li>
+      <li><a href="#tab_left_pushpull6" data-toggle="tab">Diodos</a></li>
+      <li><a href="#tab_left_pushpull7" data-toggle="tab">Transistores</a></li>
+      <li><br></li>
+      <li class="podenao_pushpull"><a href="#tab_left_pushpull4" data-toggle="tab">Diagrama de Bode</a></li>
+      <li class="podenao_pushpull"><a href="#tab_left_pushpull5" data-toggle="tab">Resposta ao Degrau</a></li>
+  </ul>
+  <div class="row">
+    <div class="tab-content col-mine-9">
+      <div id="tab_left_pushpull_topologia" class="tab-pane active">
+        <h4>
+          <p align="center">Topologia</p>
+      </h4>
+      <p align="center">
+        <img align="center" style="width: 100%; height: auto;" src="imgs/pushpull.svg"></p><br><br><br><br><br>
+    </div>
+    <div id="tab_left_pushpull1" class="tab-pane">
+        <h4>
+          <p align="center">Tensão na Carga</p>
+      </h4>
+      <div id="tensao_saida_pushpull" style="margin:auto; width: 575px; height: 300px;"></div><br><br><br><br><br>
+  </div>
+  <div id="tab_left_pushpull3" class="tab-pane">
+    <h4>
+      <p align="center">Operação do Conversor</p>
+  </h4>
+  <div id="grafico_operacao_pushpull" onclick="play_pushpull()" style="margin:auto; width: 575px; height: 300px;"></div><br><br>
+  <div class="col-mine-3">
+      <div id="valor_k_pushpull"></div>
+      <div id="valor_ganho_pushpull"></div><br>
+      <div id="continha_pushpull"></div>
+  </div>
+  <div class="col-mine-">
+      <div id="valor_vo_pushpull"></div>
+      <div id="valor_novo_carga_pushpull"></div>
+      <div id="valor_io_novo_pushpull"></div>
+  </div>
+</div>
+<div id="tab_left_pushpull2" class="tab-pane">
+    <h4>
+      <p align="center">Corrente no Indutor</p>
+  </h4>
+  <div id="corrente_indutor_pushpull" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br>
+  <h4>
+      <p align="center">Tensão no Indutor</p>
+  </h4>
+  <div id="tensao_indutor_pushpull" style="margin:auto; width: 575px; height: 300px;"></div>
+  <br><br>
+</div>
+<div id="tab_left_pushpull4" class="tab-pane">
+    <h4>
+      <p align="center">Margem de Ganho *</p>
+  </h4>
+  <div id="diagrama_bode_pushpull" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <h4>
+      <p align="center">Margem de Fase *</p>
+  </h4>
+  <div id="diagrama_fase_pushpull" style="margin:auto; width: 575px; height: 300px;"></div><br><br>* Apenas para CONDUÇÃO CONTÍNUA<br><br>
+</div>
+<div id="tab_left_pushpull5" class="tab-pane">
+    <h4>
+      <p align="center">Resposta ao Degrau *</p>
+  </h4>
+  <div id="resposta_degrau_pushpull" style="margin:auto; width: 575px; height: 300px;"></div><br>
+  <div class="col-md-6 col-mine-6">
+      <div id="valor_tensao_step_pushpull"></div>
+      <div id="valor_tempo_step_pushpull"></div>
+      <br>* Apenas para CONDUÇÃO CONTÍNUA<br></div>
+  </div>
+  <div id="tab_left_pushpull6" class="tab-pane">
+      <h4>
+        <p align="center">Corrente no Diodo</p>
+    </h4>
+    <div align="center" id="choicesDiodosA_pushpull"></div>
+    <div id="corrente_diodo_pushpull" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br>
+    <h4>
+        <p align="center">Tensão no Diodo</p>
+    </h4>
+    <div align="center" id="choicesDiodosV_pushpull"></div>
+    <div id="tensao_diodo_pushpull" style="margin:auto; width: 575px; height: 300px;"></div>
+    <br><br>
+</div>
+<div id="tab_left_pushpull7" class="tab-pane">
+  <h4>
+    <p align="center">Corrente no Interruptor</p>
+</h4>
+<div align="center" id="choicesChavesA_pushpull"></div>
+<div id="corrente_chave_pushpull" style="margin:auto; width: 575px; height: 300px;"></div>
+<br>
+<h4>
+    <p align="center">Tensão no Interruptor</p>
+</h4>
+<div align="center" id="choicesChavesV_pushpull"></div>
+<div id="tensao_chave_pushpull" style="margin:auto; width: 575px; height: 300px;"></div>
+<br><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<script>
+    $(window).load(function(){
+      $('#capa').fadeOut(1000);
+  })
+</script>
+</body>
+</html>
